@@ -1,0 +1,87 @@
+# The lane detection algorithm roughly consists of two major components: 
+#   - extraction of white pixels,
+#   - edge detection
+# The pixels that are both white and at the edges are assumed to be the boundaries of the white lanes.
+# Hough transform is then applied to fit a straight line to these boundary points.
+
+getLanes:
+  # show images for debugging if true
+  debug_mode: true
+
+  # size of input image. No need to change.
+  image_width: 672
+  image_height: 376
+
+  # 0 - hsv, 1 - hls, 2 - adaptive
+  extract_method: 2
+  # white pixel extraction
+  hsv:
+    hueMinValue: 0
+    hueMaxValue: 255
+    satMinValue: 0
+    satMaxValue: 15
+    volMinValue: 240
+    volMaxValue: 255
+  hls:
+    hueMinValue: 0
+    hueMaxValue: 255
+    satMinValue: 0
+    satMaxValue: 255
+    lightMinValue: 190
+    lightMaxValue: 255
+
+  # The white pixel extraction procedure uses thresholding of intensity values. The threshold is adaptive to light conditions 
+  # Target exposure (defined as sum intensities of the white pixels extracted) ranges from 7000 to 10000. If too many pixels are incorrectly identified as white, then raise the exposure thresholds. Vice versa. 
+  adaptive:
+    thres_white_init: 0.5
+    thres_exposure_max: 1800
+    thres_exposure_min: 1500
+
+  # dilate the white pixels 
+  dilation: 
+    edge_size: 3
+    white_size: 3
+    element: 0
+
+
+  # For finding the straight lane after boundaries of the white lane are identified.
+  hough_transform:
+    thres_num_points: 100
+
+  # Usually multiple lines will be found on the same lane. Group them together as one single line if the rho and theta are close.
+  # No need to change.
+  clustering:
+    thres_cluster_delta_angle: 10
+    thres_cluster_delta_rho: 20
+    thres_parallel_delta_angle: 3
+    thres_parallel_delta_rho: 150
+    thres_converge_delta_angle: 10
+    thres_converge_delta_rho: 60
+
+# Inverse Projection Mapping, which projects the RGB image from camera to the ground plane (converted into top-down perspective).
+ipm:
+
+  # choose region of interest in the original RGB image.
+  ROILeft: 0    # round(image_width / 3) + 150
+  ROIRight: 672   #ROILeft + 150
+  ROITop: 360 
+  ROIBottom: 376  # image_height - 1
+
+  # decide the targe size of the inverse projection mapping. This size is bit of arbitrary right now, and it might require adjustments if the ROI size is changed.
+  ipm_width: 500
+  ipm_height: 300
+
+  # values obtained from camera calibration. No need to change, unless camera mode of the ZED is changed (right now is 1280 by 720). 
+  camera_intrinsic:
+    fu: 200
+    fv: 300
+    center_u: 300
+    center_v: 150
+
+  # pitch, yaw angles in the robot frame, and height of the camera relative to the ground plane.
+  camera_extrinsic:
+    pitch: 0 # very sensitive. Make sure that after IPM the lanes look parallel to each other.
+    yaw: 0
+    h: 30 # in millimeter
+
+
