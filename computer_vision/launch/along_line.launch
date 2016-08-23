@@ -1,0 +1,16 @@
+<!-- launch file with bag file -->
+<launch>
+	<!-- <node pkg="computer_vision" type="image_converter_ipm" name="image_converter_ipm" output="screen" args="_image_transport:=compressed">
+	</node> -->
+
+	<node pkg="computer_vision" type="image_converter_ipm" name="image_converter_ipm" output="screen">
+		<rosparam command="load" file="$(find computer_vision)/launch/parameter.yaml" />
+	</node>
+
+	<!-- Using bag files -->
+	 <node pkg="rosbag" type="play" name="player" args="-l /mnt/hgfs/VMware-shares/circle-bag/left-h.bag"/> 
+	
+	<!-- Using ZED camera -->
+        <!-- <include file="$(find zed_wrapper)/launch/zed.launch" ></include> -->
+
+</launch>
