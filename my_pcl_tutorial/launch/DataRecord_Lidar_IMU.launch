@@ -1,0 +1,20 @@
+<!-- -*- mode: .XML -*- -->
+<launch>
+  <node pkg="urg_node" 
+	  type="urg_node" 
+	  output="screen" 
+	  name="Lidar_drive_node" 
+   	  args="_ip_address:=192.168.0.10"/>
+  <include file="$(find razor_imu_9dof)/launch/razor-pub.launch"/>
+ <!--<node pkg="my_pcl_tutorial"
+       type="LasertoPoint_node"
+       output="screen"
+       name="Scan_to_PointCloud_node"/>-->
+
+  <!--<include file="$(find hector_mapping)/launch/mapping_default.launch">
+    <arg name="pub_map_odom_transform" value="true"/>
+    <arg name="base_frame" value="laser" /> 
+    <arg name="odom_frame" value="laser" />
+  </include> -->
+  <node pkg="rosbag" type="record" name="Justin" args="-O /home/racecar/Mybag/RealTimePC_Laser_IMU-.bag -a"/>
+</launch>
