@@ -5,9 +5,7 @@ from std_msgs.msg import String
 
 def callback(data):
     rospy.loginfo(rospy.get_caller_id() + "I heard %s", data.data)
-    # with serial.Serial('/dev/ttyS1', 115200, timeout=0) as ser:
-    #      ser.write(data.data)        # write a string
-    #      ser.close()                 # close port
+    ser.write(data.data + '\n')        # write a string
     
 def listener():
 
@@ -24,4 +22,5 @@ def listener():
     rospy.spin()
 
 if __name__ == '__main__':
+    ser = serial.Serial('/dev/ttyACM0', 115200, timeout=0)
     listener()
