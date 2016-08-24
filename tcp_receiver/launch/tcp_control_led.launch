@@ -1,0 +1,5 @@
+<!-- -*- mode: .XML -*- -->
+<launch>
+  <node name="tcp_receiver_node" pkg="tcp_receiver" type="tcp_receiver.py" />
+  <node name="serial_led_node" pkg="pev_led_control" output="screen" type="serial_control_led.py" />
+</launch>
